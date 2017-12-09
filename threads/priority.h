@@ -5,8 +5,9 @@
 #include "copyright.h"
 #include "list.h"
 #include "thread.h"
+#include "scheduler.h"
 
-class Priority {
+class Priority : Scheduler{
 public:
     Priority();
     ~Priority();
