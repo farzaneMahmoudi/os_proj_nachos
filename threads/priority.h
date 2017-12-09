@@ -1,8 +1,16 @@
-#include "scheduler.h"
+#ifndef PRIORITY_H
+#define PRIORITY_H
 
-class Priority : Scheduler {
+
+#include "copyright.h"
+#include "list.h"
+#include "thread.h"
+
+class Priority {
 public:
-    void ReadyToRun(Thread* thread, int priority);
+    Priority();
+    ~Priority();
+    void ReadyToRun(Thread* thread, int prio);
     Thread* FindNextToRun();
     void Run(Thread* nextThread);
     void Print();
@@ -11,3 +19,4 @@ private:
 
 };
 
+#endif
