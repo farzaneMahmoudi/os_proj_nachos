@@ -290,6 +290,27 @@ Thread::SleepPriority()
 
 
 
+void
+Thread::ForkSJF(VoidFunctionPtr func, int arg)
+{
+}
+
+void
+Thread::FinishSJF()
+{
+}
+
+void
+Thread::YieldSJF()
+{
+}
+
+void
+Thread::SleepSJF()
+{
+}
+
+
 
 //----------------------------------------------------------------------
 // ThreadFinish, InterruptEnable, ThreadPrint

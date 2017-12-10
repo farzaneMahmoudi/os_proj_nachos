@@ -78,6 +78,8 @@ class Thread {
     // NOTE: DO NOT CHANGE the order of these first two members.
     // THEY MUST be in this position for SWITCH to work.
     int* stackTop;			 // the current stack pointer
+    int start_time;
+    int final_time;
     int machineState[MachineStateSize];  // all registers except for stackTop
 
   public:
@@ -103,6 +105,14 @@ class Thread {
     void SleepPriority();
 
     void FinishPriority();
+
+//SJF
+    void ForkSJF(VoidFunctionPtr func, int arg);
+    void YieldSJF();
+
+    void SleepSJF();
+
+    void FinishSJF();
 
 
     void CheckOverflow();   			// Check if thread has 

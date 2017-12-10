@@ -13,6 +13,7 @@
 #include "thread.h"
 #include "scheduler.h"
 #include "priority.h"
+#include "ShortestJobFirst.h"
 #include "interrupt.h"
 #include "stats.h"
 #include "timer.h"
@@ -27,6 +28,7 @@ extern Thread *currentThread;			// the thread holding the CPU
 extern Thread *threadToBeDestroyed;  		// the thread that just finished
 extern Scheduler *scheduler;			// the ready list
 extern Priority *priority;
+extern ShortestJobFirst *sjf;
 extern Interrupt *interrupt;			// interrupt status
 extern Statistics *stats;			// performance metrics
 extern Timer *timer;				// the hardware alarm clock
