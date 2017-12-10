@@ -13,13 +13,13 @@ ShortestJobFirst::ShortestJobFirst()
 } 
 
 
-Scheduler::~Scheduler()
+ShortestJobFirst::~ShortestJobFirst()
 { 
     delete readyList; 
 } 
 
 void
-Scheduler::ReadyToRun (Thread *thread)
+ShortestJobFirst::ReadyToRun (Thread *thread)
 {
     thread->setStatus(READY);
     thread->wait_time_start = stats->totalTicks;
@@ -45,14 +45,14 @@ Scheduler::ReadyToRun (Thread *thread)
         readyList->Append((void *)thread);
 }
 
-Thread *Scheduler::FindNextToRun ()
+Thread *ShortestJobFirst::FindNextToRun ()
 {
 	int key;
 	return (Thread *)readyList->SortedRemove(&key);    
 }
 
 void
-Scheduler::Run (Thread *nextThread)
+ShortestJobFirst::Run (Thread *nextThread)
 {
     Thread *oldThread = currentThread;
     
@@ -92,7 +92,7 @@ Scheduler::Run (Thread *nextThread)
 
 
 void
-Scheduler::Print()
+ShortestJobFirst::Print()
 {
     printf("Ready list :\n");
     readyList->Mapcar((VoidFunctionPtr) ThreadPrint);
