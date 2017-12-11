@@ -11,7 +11,7 @@ class ShortestJobFirst : Scheduler {
     ShortestJobFirst();			
     ~ShortestJobFirst();			
 
-    void ReadyToRun(Thread* thread);	
+    void ReadyToRun(Thread* thread, int prio);	
     Thread* FindNextToRun();		
 					
     void Run(Thread* nextThread);	

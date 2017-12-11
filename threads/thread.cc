@@ -19,7 +19,8 @@
 #include "switch.h"
 #include "synch.h"
 #include "system.h"
-
+#include "time.h"
+#include <sys/time.h>
 #define STACK_FENCEPOST 0xdeadbeef	// this is put at the top of the
 					// execution stack, for detecting 
 					// stack overflows
@@ -291,23 +292,72 @@ Thread::SleepPriority()
 
 
 void
-Thread::ForkSJF(VoidFunctionPtr func, int arg)
+Thread::ForkSJF(VoidFunctionPtr func, int arg, int prio)
 {
-}
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    this->start_time = tv.tv_sec;
 
+    DEBUG('t', "Forking thread \"%s\" with func = 0x%x, arg = %d\n",
+          name, (int) func, arg);
+
+    StackAllocate(func, arg);
+
+    IntStatus oldLevel = interrupt->SetLevel(IntOff);
+    sjf->ReadyToRun(this, prio);
+
+    (void) interrupt->SetLevel(oldLevel);
+}
 void
 Thread::FinishSJF()
 {
+    (void) interrupt->SetLevel(IntOff);
+    ASSERT(this == currentThread);
+
+    DEBUG('t', "Finishing thread \"%s\"\n", getName());
+
+    threadToBeDestroyed = currentThread;
+    SleepPriority();
 }
 
 void
 Thread::YieldSJF()
 {
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    this->final_time = tv.tv_sec;
+    
+    Thread *nextThread;
+    IntStatus oldLevel = interrupt->SetLevel(IntOff);
+
+    ASSERT(this == currentThread);
+	
+    DEBUG('t', "Yielding thread \"%s\"\n", getName());
+
+    nextThread = priority->FindNextToRun();
+    if (nextThread != NULL) {
+   
+        sjf->ReadyToRun(this, this->final_time - this->start_time);
+        sjf->Run(nextThread);
+    }
+    (void) interrupt->SetLevel(oldLevel);
 }
 
 void
 Thread::SleepSJF()
 {
+    Thread *nextThread;
+
+    ASSERT(this == currentThread);
+    ASSERT(interrupt->getLevel() == IntOff);
+
+    DEBUG('t', "Sleeping thread \"%s\"\n", getName());
+
+    status = BLOCKED;
+    while ((nextThread = scheduler->FindNextToRun()) == NULL)
+        interrupt->Idle();	// no one to run, wait for an interrupt
+
+    sjf->Run(nextThread); // returns when we've been signalled
 }
 
 

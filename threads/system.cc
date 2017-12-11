@@ -15,6 +15,7 @@ Thread *currentThread;			// the thread we are running now
 Thread *threadToBeDestroyed;  		// the thread that just finished
 Scheduler *scheduler;			// the ready list
 Priority *priority;
+ShortestJobFirst *sjf;
 Interrupt *interrupt;			// interrupt status
 Statistics *stats;			// performance metrics
 Timer *timer;				// the hardware timer device,
@@ -135,6 +136,7 @@ Initialize(int argc, char **argv)
     interrupt = new Interrupt;			// start up interrupt handling
     scheduler = new Scheduler();		// initialize the ready queue
     priority = new Priority();
+    sjf = new ShortestJobFirst();
     if (randomYield)				// start the timer (if needed)
 	timer = new Timer(TimerInterruptHandler, 0, randomYield);
 
@@ -193,6 +195,7 @@ Cleanup()
     delete timer;
     delete scheduler;
     delete priority;
+    delete sjf;
     delete interrupt;
     
     Exit(0);

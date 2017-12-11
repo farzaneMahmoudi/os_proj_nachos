@@ -4,8 +4,7 @@
 
 ShortestJobFirst::ShortestJobFirst()
 { 
-    readyList = new List; 
-
+    readyList = new List;
 } 
 
 
@@ -15,25 +14,56 @@ ShortestJobFirst::~ShortestJobFirst()
 } 
 
 void
-ShortestJobFirst::ReadyToRun (Thread *thread)
+ShortestJobFirst::ReadyToRun (Thread *thread, int prio)
 {
+    DEBUG('t', "Putting thread %s on ready list.\n", thread->getName());
+
     thread->setStatus(READY);
-    readyList->Append((void *)thread);
+    readyList->SortedInsert((void *)thread, prio);
 }
 
 Thread *ShortestJobFirst::FindNextToRun ()
 {
-	int key;
-	return (Thread *)readyList->SortedRemove(&key);    
+	return (Thread *)readyList->Remove();   
 }
 
 void
 ShortestJobFirst::Run (Thread *nextThread)
 {
     Thread *oldThread = currentThread;
-    
-    
-    oldThread->CheckOverflow();		    
+
+#ifdef USER_PROGRAM
+    if (currentThread->space != NULL) {
+        currentThread->SaveUserState();
+	currentThread->space->SaveState();
+    }
+#endif
+
+    oldThread->CheckOverflow();
+
+    currentThread = nextThread;
+    currentThread->setStatus(RUNNING);
+
+    DEBUG('t', "Switching from thread \"%s\" to thread \"%s\"\n",
+          oldThread->getName(), nextThread->getName());
+
+
+    SWITCH(oldThread, nextThread);
+
+    DEBUG('t', "Now in thread \"%s\"\n", currentThread->getName());
+
+
+    if (threadToBeDestroyed != NULL) {
+        delete threadToBeDestroyed;
+        threadToBeDestroyed = NULL;
+    }
+
+#ifdef USER_PROGRAM
+    if (currentThread->space != NULL) {
+        currentThread->RestoreUserState();
+	currentThread->space->RestoreState();
+    }
+#endif	    
 					  
 }
 

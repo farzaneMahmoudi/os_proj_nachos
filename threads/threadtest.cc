@@ -48,9 +48,12 @@ ThreadTest1()
 
     Thread *t = new Thread("forked priority thread");
     Thread *t1 = new Thread("forked priority thread1");
-    t->ForkPriority(SimpleThread, 1, 1);
-    t1->ForkPriority(SimpleThread, 2, 2);
-    SimpleThread(0);
+    Thread *t2 = new Thread("forked priority thread2");
+
+    t->ForkPriority(SimpleThread, 0, 0);
+    t1->ForkPriority(SimpleThread, 1, 1);
+    t2->ForkPriority(SimpleThread, 2, 2);
+    SimpleThread(4);
 }
 
 //----------------------------------------------------------------------

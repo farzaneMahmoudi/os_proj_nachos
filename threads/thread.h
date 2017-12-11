@@ -107,7 +107,7 @@ class Thread {
     void FinishPriority();
 
 //SJF
-    void ForkSJF(VoidFunctionPtr func, int arg);
+    void ForkSJF(VoidFunctionPtr func, int arg, int prio);
     void YieldSJF();
 
     void SleepSJF();
